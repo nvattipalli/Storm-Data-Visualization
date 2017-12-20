@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+<style>
+#container {
+	max-width: 660px;
+	margin: auto;
+	height: 400px;
+	margin: 0 auto;
+}
+</style>
+</head>
+<body>
+  <h5 style="color:blue;" align="right"> <a href="storm_data_home_page.html">HOME</a></h5>
+  <P>The assessment of damage level based on the deaths and damage levels helps the Government and the public to take necessary precautions to protect and save themselves from the upcoming storms. The <a href="tornado_deaths.html">Bar Chart and Pie Chart</a> shows the total number of deaths caused from 2011 to 2017 for different levels of tornado severity and the total number of deaths happened in each year for different tornado intensities.</P>
+</body>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+<div id="container" style="width: 45%; height: 300px;display: inline-block;"></div> 
+<div id="container2" style="width: 45%; height: 300px;display: inline-block;"></div><br/>
+<div id="container3" style="width: 45%; height: 300px;display: inline-block;"></div>
+<div id="container4" style="width: 45%; height: 300px;display: inline-block;"></div><br/>
+<div id="container5" style="width: 45%; height: 300px;display: inline-block;"></div>
+<div id="container6" style="width: 45%; height: 300px;display: inline-block;"></div>
+<div id="container7" style="width: 45%; height: 300px;display: inline-block;"></div>
+<script>
+var colors = Highcharts.getOptions().colors,
+    categories = ['EF0', 'EF1', 'EF2', 'EF3', 'EF4','EF5'],
+    data = [{
+        y: 298,
+        color: colors[0],
+        drilldown: {
+            name: 'EF0',
+            categories: ['TEXAS', 'OKLAHOMA', 'KANSAS',  'TENNESSEE', 'ALABAMA'],
+            data: [80, 68, 53, 49, 48],
+            color: colors[0]
+        }
+    }, {
+        y: 354,
+        color: colors[1],
+        drilldown: {
+            name: 'EF1',
+            categories: ['ALABAMA', 'ARKANSAS', 'MISSISSIPPI','OKLAHOMA', 'INDIANA', 'TENNESSEE'],
+            data: [86, 70, 65, 49, 42, 42],
+            color: colors[1]
+        }
+    }, {
+        y: 150,
+        color: colors[2],
+        drilldown: {
+            name: 'EF2',
+            categories: ['ALABAMA', 'MISSISSIPPI', 'TENNESSEE', 'ILLINOIS','GEORGIA', 'NORTH CAROLINA', 'LOUISIANA'],
+            data: [41, 23, 23, 17, 16, 16, 14],
+            color: colors[2]
+        }
+    }, {
+        y: 76,
+        color: colors[3],
+        drilldown: {
+            name: 'EF3',
+            categories: ['ALABAMA', 'MISSISSIPPI', 'GEORGIA', 'OKLAHOMA', 'NORTH CAROLINA', 'VIRGINIA', 'KANSAS', 'TENNESSEE'],
+            data: [23, 17, 8, 8, 6, 6, 4, 4],
+            color: colors[3]
+        }
+    }, {
+        y: 32,
+        color: colors[4],
+        drilldown: {
+            name: 'EF4',
+            categories: ['ALABAMA', 'TENNESSEE', 'OKLAHOMA', 'MISSISSIPPI', 'ARKANSAS', 'GEORGIA', 'IOWA', 'MISSOURI'],
+            data: [15, 7, 4, 2, 1, 1, 1, 1],
+            color: colors[4]
+        }
+    }, {
+        y: 11,
+        color: colors[5],
+        drilldown: {
+            name: 'EF5',
+            categories: ['MISSISSIPPI', 'ALABAMA', 'MISSOURI', 'OKLAHOMA'],
+            data: [5, 4, 1, 1],
+            color: colors[5]
+        }
+    }],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'The F-Scale damage level for the Year 2011'
+    },
+    subtitle: {
+        text: 'Source: <a href="http://netmarketshare.com/">National Weather Service</a>'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    series: [{
+        name: 'F-Scale',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Tornado_Count',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y  : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+
+</script>
+
+<script>
+var colors = Highcharts.getOptions().colors,
+    categories = ['EF0', 'EF1', 'EF2', 'EF3', 'EF4','EF5'],
+    data = [{
+        y: 277,
+        color: colors[0],
+        drilldown: {
+            name: 'EF0',
+            categories: ['TEXAS', 'KANSAS', 'OKLAHOMA',  'FLORIDA', 'MINNESOTA'],
+            data: [97, 60, 45, 39, 36],
+            color: colors[0]
+        }
+    }, {
+        y: 139,
+        color: colors[1],
+        drilldown: {
+            name: 'EF1',
+            categories: ['KANSAS', 'ALABAMA', 'MISSISSIPPI','OKLAHOMA', 'KENTUCKY', 'MISSOURI'],
+            data: [31, 26, 26, 23, 18, 15],
+            color: colors[1]
+        }
+    }, {
+        y: 73,
+        color: colors[2],
+        drilldown: {
+            name: 'EF2',
+            categories: ['KENTUCKY', 'ALABAMA', 'MISSISSIPPI', 'KANSAS','MISSOURI', 'TEXAS'],
+            data: [17, 15, 13, 10, 9, 9],
+            color: colors[2]
+        }
+    }, {
+        y: 31,
+        color: colors[3],
+        drilldown: {
+            name: 'EF3',
+            categories: ['KENTUCKY', 'KANSAS', 'MISSISSIPPI', 'ALABAMA', 'GEORGIA', 'NEBRASKA', 'OKLAHOMA', 'TEXAS'],
+            data: [10, 8, 3, 2, 2, 2, 2, 2],
+            color: colors[3]
+        }
+    }, {
+        y: 8,
+        color: colors[4],
+        drilldown: {
+            name: 'EF4',
+            categories: ['INDIANA', 'ILLINOIS', 'KANSAS', 'KENTUCKY'],
+            data: [4, 2, 1, 1],
+            color: colors[4]
+        }
+    }, {
+        y: 0,
+        color: colors[5],
+        drilldown: {
+            name: 'EF5',
+            categories: [],
+            data: [],
+            color: colors[5]
+        }
+    }],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container2', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'The F-Scale damage level for the Year 2012'
+    },
+    subtitle: {
+        text: 'Source: <a href="http://netmarketshare.com/">National Weather Service</a>'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    series: [{
+        name: 'F-Scale',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Tornado_Count',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y  : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+
+</script>
+
+<script>
+var colors = Highcharts.getOptions().colors,
+    categories = ['EF0', 'EF1', 'EF2', 'EF3', 'EF4','EF5'],
+    data = [{
+        y: 212,
+        color: colors[0],
+        drilldown: {
+            name: 'EF0',
+            categories: ['TEXAS', 'OKLAHOMA', 'KANSAS', 'NEBRASKA', 'FLORIDA'],
+            data: [61, 43, 40, 35, 33],
+            color: colors[0]
+        }
+    }, {
+        y: 163,
+        color: colors[1],
+        drilldown: {
+            name: 'EF1',
+            categories: ['OKLAHOMA', 'ARKANSAS', 'MISSOURI','TENNESSEE', 'ILLINOIS', 'TEXAS'],
+            data: [40, 28, 28, 25, 22, 20],
+            color: colors[1]
+        }
+    }, {
+        y: 80,
+        color: colors[2],
+        drilldown: {
+            name: 'EF2',
+            categories: ['INDIANA', 'ILLINOIS', 'KENTUCKY', 'ARKANSAS', 'MISSISSIPPI', 'NEBRASKA', 'OKLAHOMA', 'MISSOURI'],
+            data: [20, 19, 9, 7, 7, 7, 7, 4],
+            color: colors[2]
+        }
+    }, {
+        y: 23,
+        color: colors[3],
+        drilldown: {
+            name: 'EF3',
+            categories: ['ILLINOIS', 'KANSAS', 'MISSISSIPPI', 'OKLAHOMA', 'GEORGIA', 'INDIANA', 'KENTUCKY', 'MISSOURI'],
+            data: [5, 4, 3, 3, 2, 2, 2, 2],
+            color: colors[3]
+        }
+    }, {
+        y: 9,
+        color: colors[4],
+        drilldown: {
+            name: 'EF4',
+            categories: ['ILLINOIS', 'OKLAHOMA', 'IOWA', 'KANSAS', 'MISSISSIPPI', 'NEBRASKA', 'TEXAS'],
+            data: [2, 2, 1, 1, 1, 1, 1],
+            color: colors[4]
+        }
+    }, {
+        y: 1,
+        color: colors[5],
+        drilldown: {
+            name: 'EF5',
+            categories: ['OKLAHOMA'],
+            data: [1],
+            color: colors[5]
+        }
+    }],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container3', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'The F-Scale damage level for the Year 2013'
+    },
+    subtitle: {
+        text: 'Source: <a href="http://netmarketshare.com/">National Weather Service</a>'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    series: [{
+        name: 'F-Scale',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Tornado_Count',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y  : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+
+</script>
+
+<script>
+var colors = Highcharts.getOptions().colors,
+    categories = ['EF0', 'EF1', 'EF2', 'EF3', 'EF4','EF5'],
+    data = [{
+        y: 219,
+        color: colors[0],
+        drilldown: {
+            name: 'EF0',
+            categories: ['IOWA', 'COLORADO', 'TEXAS', 'NEBRASKA', 'KANSAS'],
+            data: [79, 42, 35, 33, 30],
+            color: colors[0]
+        }
+    }, {
+        y: 164,
+        color: colors[1],
+        drilldown: {
+            name: 'EF1',
+            categories: ['ALABAMA', 'ILLINOIS', 'IOWA','INDIANA', 'KENTUCKY', 'MISSOURI'],
+            data: [36, 32, 28, 24, 22, 22],
+            color: colors[1]
+        }
+    }, {
+        y: 58,
+        color: colors[2],
+        drilldown: {
+            name: 'EF2',
+            categories: ['NORTH CAROLINA', 'NEBRASKA', 'MISSISSIPPI', 'ALABAMA', 'LOUISIANA', 'MINNESOTA', 'MISSOURI', 'SOUTH DAKOTA', 'WISCONSIN'],
+            data: [11, 10, 9, 8, 4, 4, 4, 4, 4],
+            color: colors[2]
+        }
+    }, {
+        y: 28,
+        color: colors[3],
+        drilldown: {
+            name: 'EF3',
+            categories: ['MISSISSIPPI', 'NEBRASKA', 'ALABAMA', 'TENNESSEE', 'ARKANSAS', 'KANSAS', 'MONTANA', 'NEW YORK', 'NORTH CAROLINA', 'OHIO', 'WISCONSIN'],
+            data: [7, 7, 4, 3, 1, 1, 1, 1, 1, 1, 1],
+            color: colors[3]
+        }
+    }, {
+        y: 8,
+        color: colors[4],
+        drilldown: {
+            name: 'EF4',
+            categories: ['NEBRASKA', 'ARKANSAS', 'MISSISSIPPI', 'SOUTH DAKOTA'],
+            data: [5, 1, 1, 1],
+            color: colors[4]
+        }
+    }, {
+        y: 0,
+        color: colors[5],
+        drilldown: {
+            name: 'EF5',
+            categories: [],
+            data: [],
+            color: colors[5]
+        }
+    }],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container4', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'The F-Scale damage level for the Year 2014'
+    },
+    subtitle: {
+        text: 'Source: <a href="http://netmarketshare.com/">National Weather Service</a>'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    series: [{
+        name: 'F-Scale',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Tornado_Count',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y  : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+
+</script>
+
+<script>
+var colors = Highcharts.getOptions().colors,
+    categories = ['EF0', 'EF1', 'EF2', 'EF3', 'EF4','EF5'],
+    data = [{
+        y: 425,
+        color: colors[0],
+        drilldown: {
+            name: 'EF0',
+            categories: ['TEXAS', 'KANSAS', 'OKLAHOMA', 'COLORADO', 'ILLINOIS', 'IOWA'],
+            data: [158, 91, 64, 42, 35, 35],
+            color: colors[0]
+        }
+    }, {
+        y: 258,
+        color: colors[1],
+        drilldown: {
+            name: 'EF1',
+            categories: ['TEXAS', 'OKLAHOMA', 'ILLINOIS','KANSAS', 'IOWA', 'MISSISSIPPI'],
+            data: [72, 48, 38, 36, 32, 32],
+            color: colors[1]
+        }
+    }, {
+        y: 54,
+        color: colors[2],
+        drilldown: {
+            name: 'EF2',
+            categories: ['TEXAS', 'OKLAHOMA', 'KANSAS', 'ILLINOIS', 'IOWA'],
+            data: [20, 13, 10, 7, 4],
+            color: colors[2]
+        }
+    }, {
+        y: 24,
+        color: colors[3],
+        drilldown: {
+            name: 'EF3',
+            categories: ['TEXAS', 'KANSAS', 'OKLAHOMA', 'MISSISSIPPI', 'COLORADO', 'ILLINOIS', 'IOWA', 'TENNESSEE'],
+            data: [7, 4, 4, 3, 2, 2, 1, 1],
+            color: colors[3]
+        }
+    }, {
+        y: 8,
+        color: colors[4],
+        drilldown: {
+            name: 'EF4',
+            categories: ['MISSISSIPPI', 'TENNESSEE', 'ILLINOIS', 'TEXAS'],
+            data: [4, 2, 1, 1],
+            color: colors[4]
+        }
+    }, {
+        y: 0,
+        color: colors[5],
+        drilldown: {
+            name: 'EF5',
+            categories: [],
+            data: [],
+            color: colors[5]
+        }
+    }],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container5', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'The F-Scale damage level for the Year 2015'
+    },
+    subtitle: {
+        text: 'Source: <a href="http://netmarketshare.com/">National Weather Service</a>'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    series: [{
+        name: 'F-Scale',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Tornado_Count',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y  : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+
+</script>
+
+<script>
+var colors = Highcharts.getOptions().colors,
+    categories = ['EF0', 'EF1', 'EF2', 'EF3', 'EF4','EF5'],
+    data = [{
+        y: 283,
+        color: colors[0],
+        drilldown: {
+            name: 'EF0',
+            categories: ['KANSAS', 'TEXAS', 'IOWA', 'NEBRASKA', 'MINNESOTA', 'ALABAMA', 'FLORIDA'],
+            data: [74, 57, 35, 35, 28, 27, 27],
+            color: colors[0]
+        }
+    }, {
+        y: 175,
+        color: colors[1],
+        drilldown: {
+            name: 'EF1',
+            categories: ['ALABAMA', 'MISSISSIPPI', 'OKLAHOMA','TEXAS', 'KANSAS'],
+            data: [35, 34, 32, 30, 22, 22],
+            color: colors[1]
+        }
+    }, {
+        y: 44,
+        color: colors[2],
+        drilldown: {
+            name: 'EF2',
+            categories: ['ALABAMA', 'TEXAS', 'KANSAS', 'OKLAHOMA', 'ILLINOIS'],
+            data: [11, 10, 9, 8, 6],
+            color: colors[2]
+        }
+    }, {
+        y: 27,
+        color: colors[3],
+        drilldown: {
+            name: 'EF3',
+            categories: ['KANSAS', 'OKLAHOMA', 'TEXAS', 'ALABAMA', 'FLORIDA', 'INDIANA', 'VIRGINIA', 'KENTUCKY', 'LOUISIANA', 'MONTANA', 'NORTH DAKOTA', 'TENNESSEE'],
+            data: [8, 3, 3, 2, 2, 2, 2, 1, 1, 1, 1, 1],
+            color: colors[3]
+        }
+    }, {
+        y: 2,
+        color: colors[4],
+        drilldown: {
+            name: 'EF4',
+            categories: ['KANSAS', 'OKLAHOMA'],
+            data: [1, 1],
+            color: colors[4]
+        }
+    }, {
+        y: 0,
+        color: colors[5],
+        drilldown: {
+            name: 'EF5',
+            categories: [],
+            data: [],
+            color: colors[5]
+        }
+    }],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container6', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'The F-Scale damage level for the Year 2016'
+    },
+    subtitle: {
+        text: 'Source: <a href="http://netmarketshare.com/">National Weather Service</a>'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    series: [{
+        name: 'F-Scale',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Tornado_Count',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y  : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+
+</script>
+
+<script>
+var colors = Highcharts.getOptions().colors,
+    categories = ['EF0', 'EF1', 'EF2', 'EF3', 'EF4','EF5'],
+    data = [{
+        y: 228,
+        color: colors[0],
+        drilldown: {
+            name: 'EF0',
+            categories: ['TEXAS', 'GEORGIA', 'KANSAS', 'MISSOURI', 'MINNESOTA'],
+            data: [70, 52, 43, 41, 22],
+            color: colors[0]
+        }
+    }, {
+        y: 240,
+        color: colors[1],
+        drilldown: {
+            name: 'EF1',
+            categories: ['GEORGIA', 'LOUISIANA', 'MISSISSIPPI','MISSOURI', 'TEXAS'],
+            data: [69, 54, 43, 38, 36],
+            color: colors[1]
+        }
+    }, {
+        y: 91,
+        color: colors[2],
+        drilldown: {
+            name: 'EF2',
+            categories: ['GEORGIA', 'TEXAS', 'LOUISIANA', 'MISSISSIPPI', 'IOWA', 'INDIANA', 'MISSOURI', 'OKLAHOMA'],
+            data: [18, 18, 14, 12, 11, 6, 6, 6],
+            color: colors[2]
+        }
+    }, {
+        y: 20,
+        color: colors[3],
+        drilldown: {
+            name: 'EF3',
+            categories: ['GEORGIA', 'ILLINOIS', 'LOUISIANA', 'TEXAS', 'INDIANA', 'KANSAS', 'MISSISSIPPI', 'MISSOURI', 'WISCONSIN'],
+            data: [6, 5, 2, 2, 1, 1, 1, 1, 1],
+            color: colors[3]
+        }
+    }, {
+        y: 2,
+        color: colors[4],
+        drilldown: {
+            name: 'EF4',
+            categories: ['MISSOURI', 'TEXAS'],
+            data: [1, 1],
+            color: colors[4]
+        }
+    }, {
+        y: 0,
+        color: colors[5],
+        drilldown: {
+            name: 'EF5',
+            categories: [],
+            data: [],
+            color: colors[5]
+        }
+    }],
+    browserData = [],
+    versionsData = [],
+    i,
+    j,
+    dataLen = data.length,
+    drillDataLen,
+    brightness;
+
+
+// Build the data arrays
+for (i = 0; i < dataLen; i += 1) {
+
+    // add browser data
+    browserData.push({
+        name: categories[i],
+        y: data[i].y,
+        color: data[i].color
+    });
+
+    // add version data
+    drillDataLen = data[i].drilldown.data.length;
+    for (j = 0; j < drillDataLen; j += 1) {
+        brightness = 0.2 - (j / drillDataLen) / 5;
+        versionsData.push({
+            name: data[i].drilldown.categories[j],
+            y: data[i].drilldown.data[j],
+            color: Highcharts.Color(data[i].color).brighten(brightness).get()
+        });
+    }
+}
+
+// Create the chart
+Highcharts.chart('container7', {
+    chart: {
+        type: 'pie'
+    },
+    title: {
+        text: 'The F-Scale damage level for the Year 2017'
+    },
+    subtitle: {
+        text: 'Source: <a href="http://netmarketshare.com/">National Weather Service</a>'
+    },
+    yAxis: {
+        title: {
+            text: 'Total percent market share'
+        }
+    },
+    plotOptions: {
+        pie: {
+            shadow: false,
+            center: ['50%', '50%']
+        }
+    },
+    tooltip: {
+        valueSuffix: ''
+    },
+    series: [{
+        name: 'F-Scale',
+        data: browserData,
+        size: '60%',
+        dataLabels: {
+            formatter: function () {
+                return this.y > 5 ? this.point.name : null;
+            },
+            color: '#ffffff',
+            distance: -30
+        }
+    }, {
+        name: 'Tornado_Count',
+        data: versionsData,
+        size: '80%',
+        innerSize: '60%',
+        dataLabels: {
+            formatter: function () {
+                // display only if larger than 1
+                return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +
+                    this.y  : null;
+            }
+        },
+        id: 'versions'
+    }],
+    responsive: {
+        rules: [{
+            condition: {
+                maxWidth: 400
+            },
+            chartOptions: {
+                series: [{
+                    id: 'versions',
+                    dataLabels: {
+                        enabled: false
+                    }
+                }]
+            }
+        }]
+    }
+});
+
+</script>
+</html>
